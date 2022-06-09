@@ -53,6 +53,8 @@ def parse():
     parser.add_argument("--front_dev",
                         action="store_true")
     
+    parser.add_argument('--cpu_only', action='store_true')
+    
     args = parser.parse_args()
     return args
 

@@ -42,7 +42,8 @@ def create_app(args):
             cache_host=args.cache_host,
             cache_port=args.cache_port,
             use_neural_normalizer=args.use_neural_normalizer,
-            keep_files=args.keep_files
+            keep_files=args.keep_files,
+            cpu_only=args.cpu_only
         )
     
     r_parser = ResultParser()

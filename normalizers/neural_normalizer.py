@@ -22,7 +22,7 @@ class NamesDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, idx):
         # TODO! remove cuda()
-        return {key: torch.tensor(val[idx]).cuda() for key, val in self.encodings.items()}
+        return {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
 
     def __len__(self):
         return len(self.encodings.input_ids)
@@ -30,12 +30,16 @@ class NamesDataset(torch.utils.data.Dataset):
 # TODO! inherit Normalizer class
 class NeuralNormalizer(object):
     # def __init__(self, model_name_or_path, dictionary_path):
-    def __init__(self, model_name_or_path, cache_path=None):
+    def __init__(self, model_name_or_path, cache_path=None, cpu_only=False):
         self.max_length = 25
         self.batch_size = 1024
         self.k = 1 # top 1
 
-        self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
+        if cpu_only:
+            self.device = 'cpu'
+        else:
+            self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
+        print('neuralnormalizer', self.device)
         
         self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
         self.model = AutoModel.from_pretrained(model_name_or_path).to(self.device)
@@ -81,6 +85,7 @@ class NeuralNormalizer(object):
 
         with torch.no_grad():
             for batch in name_dataloader:
+                batch = {k: v.to(self.device) for (k, v) in batch.items()}
                 batch_name_embeds = self.model(**batch)
                 batch_name_embeds = batch_name_embeds[0][:,0].cpu().detach().numpy() # [CLS] representations
                 name_embeds.append(batch_name_embeds)

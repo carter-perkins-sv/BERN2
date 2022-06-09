@@ -9,8 +9,9 @@ mkdir logs
 
 # run neural NER
 nohup python multi_ner/ner_server.py \
+    --cpu_only \
     --mtner_home multi_ner \
-    --mtner_port 18894 >> logs/nohup_multi_ner.out 2>&1 &
+    --mtner_port 18894 >> logs/nohup_multi_ner_cpu.out 2>&1 &
 
 cd resources
 
@@ -60,6 +61,7 @@ env "PATH=$PATH" nohup python -u server.py \
     --disease_norm_port 18892 \
     --use_neural_normalizer \
     --port 5004 \
+    --cpu_only \
     >> logs/nohup_bern2.out 2>&1 &
 
 tail -f logs/nohup_bern2.out

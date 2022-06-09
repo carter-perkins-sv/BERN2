@@ -45,11 +45,13 @@ class BERN2():
         max_word_len=50, 
         seed=2019,
         use_neural_normalizer=True,
-        keep_files=False):
+        keep_files=False,
+        cpu_only=False):
 
         self.time_format = time_format
 
         print(datetime.now().strftime(self.time_format), 'BERN2 LOADING..')
+        print(cpu_only)
         random.seed(seed)
         np.random.seed(seed)
 
@@ -85,7 +87,8 @@ class BERN2():
         self.normalizer = Normalizer(
             gene_port = gene_norm_port,
             disease_port = disease_norm_port,
-            use_neural_normalizer = use_neural_normalizer
+            use_neural_normalizer = use_neural_normalizer,
+            cpu_only=cpu_only
         )
 
         # (Optional) For caching, use mongodb
@@ -653,6 +656,7 @@ if __name__ == '__main__':
                            help='time format', default='[%d/%b/%Y %H:%M:%S.%f]')
     argparser.add_argument("--use_neural_normalizer", action="store_true")
     argparser.add_argument("--keep_files", action="store_true")
+    argparser.add_argument('--cpu_only', action='store_true')
     
     args = argparser.parse_args()
 
@@ -674,7 +678,8 @@ if __name__ == '__main__':
         cache_port=args.cache_port,
         time_format=args.time_format,
         use_neural_normalizer=args.use_neural_normalizer,
-        keep_files=args.keep_files
+        keep_files=args.keep_files,
+        cpu_only=args.cpu_only
     )
 
     # result = bern2.annotate_text("cancer is a disease")

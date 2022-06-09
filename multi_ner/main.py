@@ -506,7 +506,13 @@ class MTNER:
             num_labels=self.num_labels,
             config=self.config,
         )
-        self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
+        if self.params.cpu_only:
+            print('CPU ONLY')
+            self.device = 'cpu'
+        else:
+            print('CHECKING FOR CUDA')
+            self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
+        print(self.device)
         self.model = self.model.to(self.device)
         self.entity_types = ['disease', 'drug', 'gene', 'species', 'cell_line', 'DNA', 'RNA', 'cell_type']
         self.estimator_dict = {}
